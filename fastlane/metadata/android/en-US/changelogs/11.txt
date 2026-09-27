@@ -1,1 +1,1 @@
-First release: on-device Korean voices (Supertonic 3), Korean number normalization, and optional OpenAI-compatible, Google Cloud and ElevenLabs voices.
+First release: on-device Korean voices (Supertonic 3) with a compact int8 model and a fix for dropped syllables, Korean number normalization, and optional OpenAI-compatible, Google Cloud and ElevenLabs voices.

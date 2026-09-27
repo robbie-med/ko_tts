@@ -40,6 +40,7 @@ texts = ["애 보느라 힘들지?"] + [l.strip() for l in open(sys.argv[2]) if 
 asr = WhisperModel("small", device="cpu", compute_type="int8")
 hang = lambda s: re.sub(r"[^가-힣]", "", s)
 tmp = os.path.join(tempfile.gettempdir(), "drop_probe.wav")
+# Result 2026-09-27: noise 1.0 → 4.2% dropped, 0.8 → 1.4%, 0.6 → 0%; floor 0.17 → 4.2% (no help).
 for noise, floor in [(1.0, 0), (0.8, 0), (0.6, 0), (1.0, 0.17)]:
     ok = short = 0; fails = []
     for t in texts:

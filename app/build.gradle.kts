@@ -24,7 +24,7 @@ android {
         versionCode = 1
         versionName = "0.1.0"
         // Flip once the int8 files are uploaded to ModelManager.COMPACT_BASE.
-        buildConfigField("boolean", "COMPACT_READY", "false")
+        buildConfigField("boolean", "COMPACT_READY", "true")
     }
 
     buildFeatures {

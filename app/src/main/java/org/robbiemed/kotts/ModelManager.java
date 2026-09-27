@@ -26,7 +26,7 @@ public final class ModelManager {
     static final String ST_COMMIT = "724fb5abbf5502583fb520898d45929e62f02c0b";
     static final String ST_BASE = "https://huggingface.co/Supertone/supertonic-3/resolve/" + ST_COMMIT + "/";
     /** int8 text encoder + vector estimator, built by tools/quantize.py from the files above. */
-    static final String COMPACT_BASE = "https://huggingface.co/robbie-med/supertonic-3-int8/resolve/main/";
+    static final String COMPACT_BASE = "https://huggingface.co/robbiemed/supertonic-3-int8/resolve/38303b5434210a3bbd1fa287ffce287e10a943b0/";
 
     /** The compact build needs a host for its two int8 files; until COMPACT_BASE is live, offer full only. */
     public static boolean compactAvailable() { return BuildConfig.COMPACT_READY; }
@@ -49,7 +49,8 @@ public final class ModelManager {
 
     static final class F {
         final String path, url, sha;
-        F(String base, String path, String sha) { this.path = path; this.url = base + path; this.sha = sha; }
+        F(String base, String path, String sha) { this(base, path, sha, path); }
+        F(String base, String path, String sha, String remote) { this.path = path; this.url = base + remote; this.sha = sha; }
     }
 
     static List<F> files(String variant) {
@@ -60,8 +61,9 @@ public final class ModelManager {
         l.add(new F(ST_BASE, "onnx/duration_predictor.onnx", "c3eb91414d5ff8a7a239b7fe9e34e7e2bf8a8140d8375ffb14718b1c639325db"));
         l.add(new F(ST_BASE, "onnx/vocoder.onnx", "085de76dd8e8d5836d6ca66826601f615939218f90e519f70ee8a36ed2a4c4ba"));
         if (compact) {
-            l.add(new F(COMPACT_BASE, "onnx/text_encoder.onnx", "d32a22d345ecbc288b5fc121ad0aa27bd4708f9617b6c7372410836f6e02db71"));
-            l.add(new F(COMPACT_BASE, "onnx/vector_estimator.onnx", "9c6408bdf36ef1fa534a93baac7f828c0abb5b1b87b792153497603fcf0f5763"));
+            // These two live at the root of the int8 repo.
+            l.add(new F(COMPACT_BASE, "onnx/text_encoder.onnx", "d32a22d345ecbc288b5fc121ad0aa27bd4708f9617b6c7372410836f6e02db71", "text_encoder.onnx"));
+            l.add(new F(COMPACT_BASE, "onnx/vector_estimator.onnx", "9c6408bdf36ef1fa534a93baac7f828c0abb5b1b87b792153497603fcf0f5763", "vector_estimator.onnx"));
         } else {
             l.add(new F(ST_BASE, "onnx/text_encoder.onnx", "c7befd5ea8c3119769e8a6c1486c4edc6a3bc8365c67621c881bbb774b9902ff"));
             l.add(new F(ST_BASE, "onnx/vector_estimator.onnx", "883ac868ea0275ef0e991524dc64f16b3c0376efd7c320af6b53f5b780d7c61c"));

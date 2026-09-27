@@ -40,11 +40,11 @@ public final class Supertonic implements AutoCloseable {
     private final Random rng = new Random();
 
     /**
-     * Minimum seconds per Hangul syllable. Supertonic predicts one duration for the whole chunk;
-     * when that guess is too short the model squeezes the text in and drops syllables. A floor
-     * stops that without slowing down sentences it already times well.
+     * Scale on the starting noise. Supertonic sometimes swallows syllables, randomly per seed.
+     * In tools/drop_probe.py (12 phrases × 6 seeds) drops went from 4.2% of takes at 1.0 to 1.4%
+     * at 0.8 and 0% at 0.6. A per-syllable duration floor made no difference.
      */
-    public float minSecPerSyllable = 0f;
+    public float noiseScale = 0.6f;
 
     public static final class Style implements AutoCloseable {
         final OnnxTensor ttl, dp;
@@ -127,12 +127,11 @@ public final class Supertonic implements AutoCloseable {
             try (OrtSession.Result r = dp.run(in)) {
                 duration = ((OnnxTensor) r.get(0)).getFloatBuffer().get(0) / speed;
             }
-            duration = Math.max(duration, hangulSyllables(text) * minSecPerSyllable / speed);
 
             int wavLen = (int) (duration * sampleRate);
             int latLen = Math.max(1, (wavLen + chunkSize - 1) / chunkSize);
             float[] xt = new float[latentDim * latLen];
-            for (int k = 0; k < xt.length; k++) xt[k] = (float) rng.nextGaussian();
+            for (int k = 0; k < xt.length; k++) xt[k] = (float) rng.nextGaussian() * noiseScale;
             float[] latMask = new float[latLen];
             java.util.Arrays.fill(latMask, 1f);
 
@@ -166,12 +165,6 @@ public final class Supertonic implements AutoCloseable {
                 return wav;
             }
         }
-    }
-
-    static int hangulSyllables(String s) {
-        int n = 0;
-        for (int k = 0; k < s.length(); k++) { char c = s.charAt(k); if (c >= 0xAC00 && c <= 0xD7A3) n++; }
-        return n;
     }
 
     private long[] encode(String text) {

@@ -1,1 +1,1 @@
-첫 출시: 휴대폰 한국어 음성(Supertonic 3), 한국어 숫자 읽기, OpenAI 호환·Google Cloud·ElevenLabs 온라인 음성 선택 지원.
+첫 출시: 휴대폰 한국어 음성(Supertonic 3), 경량 int8 모델, 음절 누락 수정, 한국어 숫자 읽기, OpenAI 호환·Google Cloud·ElevenLabs 온라인 음성 선택 지원.

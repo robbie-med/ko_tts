@@ -1,0 +1,44 @@
+name: release
+
+# Push a tag like v0.1.0 → build signed APKs → publish a GitHub release (Obtainium/IzzyOnDroid pick these up).
+# Signing key comes from repo secrets: KEYSTORE_B64 (base64 .jks), KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: Signing config
+        env:
+          KEYSTORE_B64: ${{ secrets.KEYSTORE_B64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          echo "$KEYSTORE_B64" | base64 -d > release.jks
+          printf 'storeFile=release.jks\nstorePassword=%s\nkeyAlias=%s\nkeyPassword=%s\n' \
+            "$KEYSTORE_PASSWORD" "$KEY_ALIAS" "$KEY_PASSWORD" > keystore.properties
+      - name: Build
+        run: ./gradlew --no-daemon assembleRelease
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          mkdir out
+          for f in app/build/outputs/apk/release/app-*-release.apk; do
+            abi=$(basename "$f" | sed -E 's/app-(.*)-release.apk/\1/')
+            cp "$f" "out/ko_tts-$TAG-$abi.apk"
+          done
+          notes=$(ls fastlane/metadata/android/en-US/changelogs/*.txt | sort -V | tail -1)
+          gh release create "$TAG" out/*.apk --title "Ko TTS $TAG" --notes-file "$notes"

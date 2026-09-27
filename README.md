@@ -5,7 +5,7 @@ Natural-sounding **Korean text-to-speech for Android** that runs on your phone. 
 Ko TTS is a standard Android TTS engine. Once it's selected, every app that reads aloud uses it: e-book readers, OsmAnd, screen readers, language apps.
 
 - **On-device neural voices.** [Supertonic 3](https://huggingface.co/Supertone/supertonic-3) runs through ONNX Runtime, with 10 voices and 31 languages. Korean is the focus.
-- **Tiny APK, about 7 MB.** The voice model is downloaded once from Hugging Face, pinned to a commit and verified with SHA-256:
+- **Tiny APK, about 7 MB.** The voice model is downloaded once from Hugging Face ([Supertone](https://huggingface.co/Supertone/supertonic-3), plus the int8 files at [robbiemed/supertonic-3-int8](https://huggingface.co/robbiemed/supertonic-3-int8)), pinned to a commit and verified with SHA-256:
   - compact int8: 190 MB
   - full fp32: 401 MB
 - **Korean numbers read correctly.** 3시 30분 → 세 시 삼십 분, 38.2도 → 삼십팔 점 이 도, 010-1234-5678 → 공일공…, ₩35,000 → 삼만 오천 원, 3개 → 세 개.
@@ -18,7 +18,9 @@ Ko TTS is a standard Android TTS engine. Once it's selected, every app that read
 
 ## Install
 
-Grab the APK for your phone's CPU from [Releases](https://github.com/robbie-med/ko_tts/releases):
+**With [Obtainium](https://github.com/ImranR98/Obtainium):** add the app from `https://github.com/robbie-med/ko_tts`. Updates arrive automatically.
+
+**By hand:** grab the APK for your phone's CPU from [Releases](https://github.com/robbie-med/ko_tts/releases):
 - `arm64-v8a` covers every Pixel and almost every phone from the last 7 years.
 - `universal` works everywhere.
 
@@ -65,6 +67,18 @@ Pixel 10a (Tensor G4), 4 threads, 6 steps, three short sentences (7.5 s of speec
 
 Loading the model takes about 2 s, once per engine start. The first sentence is synthesized on its own so playback starts right away; the rest is generated while it plays.
 
+### Dropped syllables
+
+Supertonic occasionally swallows syllables, and which ones changes with each random seed. [`tools/drop_probe.py`](tools/drop_probe.py) ran 12 phrases × 6 seeds through Whisper:
+
+| Starting noise | Takes with dropped syllables |
+|---|---|
+| 1.0 (Supertone's default) | 4.2% |
+| 0.8 | 1.4% |
+| 0.6 (Ko TTS default) | 0% |
+
+A per-syllable minimum duration made no difference, so the drops aren't caused by rushing.
+
 ## Build
 
 ```bash
@@ -72,6 +86,8 @@ Loading the model takes about 2 s, once per engine start. The first sentence is 
 ```
 
 Needs JDK 17 and the Android SDK (compileSdk 36). Release signing reads `keystore.properties`, which isn't committed. Without it you get unsigned APKs.
+
+Releases are built by [GitHub Actions](.github/workflows/release.yml): pushing a `v*` tag builds signed APKs and publishes the release.
 
 ## License
 
