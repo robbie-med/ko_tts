@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <LinearLayout
+        android:id="@+id/root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/tagline"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <!-- Engine status -->
+        <TextView style="@style/Section" android:text="@string/sec_status" />
+        <TextView
+            android:id="@+id/engine_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/open_settings"
+            style="@style/Btn"
+            android:text="@string/open_tts_settings" />
+
+        <!-- Provider -->
+        <TextView style="@style/Section" android:text="@string/sec_provider" />
+        <RadioGroup
+            android:id="@+id/provider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <RadioButton android:id="@+id/p_supertonic" style="@style/Radio" android:text="@string/p_supertonic" />
+            <RadioButton android:id="@+id/p_openai" style="@style/Radio" android:text="@string/p_openai" />
+            <RadioButton android:id="@+id/p_google" style="@style/Radio" android:text="@string/p_google" />
+            <RadioButton android:id="@+id/p_elevenlabs" style="@style/Radio" android:text="@string/p_elevenlabs" />
+        </RadioGroup>
+
+        <!-- On-device model -->
+        <LinearLayout
+            android:id="@+id/box_supertonic"
+            style="@style/Box">
+            <TextView android:id="@+id/model_status" android:layout_width="match_parent" android:layout_height="wrap_content" />
+            <ProgressBar
+                android:id="@+id/model_progress"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="1000"
+                android:visibility="gone" />
+            <Button android:id="@+id/dl_compact" style="@style/Btn" />
+            <Button android:id="@+id/dl_full" style="@style/Btn" />
+            <Button android:id="@+id/dl_cancel" style="@style/Btn" android:text="@string/dl_cancel" />
+            <TextView style="@style/Label" android:text="@string/voice" />
+            <Spinner android:id="@+id/st_voice" android:layout_width="match_parent" android:layout_height="wrap_content" />
+            <TextView style="@style/Label" android:text="@string/quality" />
+            <Spinner android:id="@+id/st_steps" android:layout_width="match_parent" android:layout_height="wrap_content" />
+            <TextView style="@style/Hint" android:text="@string/model_note" />
+        </LinearLayout>
+
+        <!-- OpenAI-compatible -->
+        <LinearLayout android:id="@+id/box_openai" style="@style/Box">
+            <TextView style="@style/Label" android:text="@string/preset" />
+            <Spinner android:id="@+id/oa_preset" android:layout_width="match_parent" android:layout_height="wrap_content" />
+            <TextView style="@style/Label" android:text="@string/base_url" />
+            <EditText android:id="@+id/oa_base" style="@style/Field" android:inputType="textUri" />
+            <TextView style="@style/Label" android:text="@string/api_key" />
+            <EditText android:id="@+id/oa_key" style="@style/Field" android:inputType="textPassword" />
+            <TextView style="@style/Label" android:text="@string/model" />
+            <EditText android:id="@+id/oa_model" style="@style/Field" />
+            <TextView style="@style/Label" android:text="@string/voice_id" />
+            <EditText android:id="@+id/oa_voice" style="@style/Field" />
+            <TextView style="@style/Hint" android:text="@string/online_note" />
+        </LinearLayout>
+
+        <!-- Google -->
+        <LinearLayout android:id="@+id/box_google" style="@style/Box">
+            <TextView style="@style/Label" android:text="@string/api_key" />
+            <EditText android:id="@+id/g_key" style="@style/Field" android:inputType="textPassword" />
+            <TextView style="@style/Label" android:text="@string/voice_id" />
+            <EditText android:id="@+id/g_voice" style="@style/Field" android:hint="ko-KR-Neural2-A" />
+            <TextView style="@style/Hint" android:text="@string/online_note" />
+        </LinearLayout>
+
+        <!-- ElevenLabs -->
+        <LinearLayout android:id="@+id/box_elevenlabs" style="@style/Box">
+            <TextView style="@style/Label" android:text="@string/api_key" />
+            <EditText android:id="@+id/el_key" style="@style/Field" android:inputType="textPassword" />
+            <TextView style="@style/Label" android:text="@string/voice_id" />
+            <EditText android:id="@+id/el_voice" style="@style/Field" android:hint="JBFqnCBsd6RMkjVDRZzb" />
+            <TextView style="@style/Label" android:text="@string/model" />
+            <EditText android:id="@+id/el_model" style="@style/Field" android:hint="eleven_multilingual_v2" />
+            <TextView style="@style/Hint" android:text="@string/online_note" />
+        </LinearLayout>
+
+        <!-- Try it -->
+        <TextView style="@style/Section" android:text="@string/sec_try" />
+        <EditText
+            android:id="@+id/try_text"
+            style="@style/Field"
+            android:inputType="textMultiLine"
+            android:minLines="2"
+            android:text="@string/try_default" />
+        <Button android:id="@+id/speak" style="@style/Btn" android:text="@string/speak" />
+        <TextView android:id="@+id/try_status" style="@style/Hint" />
+
+        <TextView style="@style/Section" android:text="@string/sec_about" />
+        <TextView
+            android:id="@+id/about"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autoLink="web"
+            android:text="@string/about" />
+    </LinearLayout>
+</ScrollView>

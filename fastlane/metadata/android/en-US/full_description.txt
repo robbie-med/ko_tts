@@ -1,0 +1,16 @@
+<p><b>Ko TTS</b> is a text-to-speech engine for Android with natural-sounding <b>Korean</b> voices. Once installed, any app that reads text aloud can use it: e-book readers, navigation, screen readers, language-learning apps.</p>
+
+<p>It's built for phones without Google services, like GrapheneOS, CalyxOS and LineageOS, where there's otherwise no good Korean voice.</p>
+
+<p><b>Features</b></p>
+<ul>
+<li>Neural Korean voices (Supertonic 3), running entirely on your phone. Nothing you read is sent anywhere.</li>
+<li>10 voices (5 female, 5 male), plus 30 other languages from the same model.</li>
+<li>Korean number reading done right: 세 시 삼십 분, 삼십팔 점 이 도, phone numbers digit by digit, prices in 만 원.</li>
+<li>Small app: the voice model (190 MB compact or 401 MB full precision) is downloaded once, straight from Hugging Face, and checked against SHA-256.</li>
+<li>Optional online voices with your own API key: any OpenAI-compatible service (OpenAI, PPQ.AI, self-hosted servers), Google Cloud Text-to-Speech or ElevenLabs.</li>
+</ul>
+
+<p><b>Setup</b>: open Ko TTS, download a voice model, then choose Ko TTS as the preferred engine in Android Settings → Accessibility (or System) → Text-to-speech output.</p>
+
+<p>The on-device voices use Supertonic 3 by Supertone Inc. under the BigScience OpenRAIL-M license, which prohibits harmful uses such as impersonation and disinformation.</p>

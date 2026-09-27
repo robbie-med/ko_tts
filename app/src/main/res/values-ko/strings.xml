@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Ko TTS</string>
+    <string name="tagline">어떤 앱에서든 자연스러운 한국어 음성. 휴대폰 안에서 작동하며 구글 서비스가 필요 없습니다.</string>
+
+    <string name="sec_status">엔진</string>
+    <string name="is_default">Ko TTS가 기본 음성 엔진입니다.</string>
+    <string name="not_default">아직 기본 엔진이 아닙니다. Ko TTS를 직접 지정하는 앱에서는 그대로 쓸 수 있습니다. 모든 앱에서 쓰려면 \'기본 엔진\'을 Ko TTS로 바꾸세요.</string>
+    <string name="open_tts_settings">안드로이드 음성 설정 열기</string>
+
+    <string name="sec_provider">음성 소스</string>
+    <string name="p_supertonic">휴대폰에서: Supertonic 3 (오프라인, 개인정보 보호)</string>
+    <string name="p_openai">OpenAI 호환 API (OpenAI, PPQ.AI, 자체 서버)</string>
+    <string name="p_google">Google Cloud Text-to-Speech</string>
+    <string name="p_elevenlabs">ElevenLabs</string>
+
+    <string name="dl_title">Ko TTS 음성 모델</string>
+    <string name="dl_compact">경량 모델 다운로드 (%d MB)</string>
+    <string name="dl_full">고정밀 모델 다운로드 (%d MB)</string>
+    <string name="dl_replace_compact">경량 모델로 바꾸기 (%d MB)</string>
+    <string name="dl_replace_full">고정밀 모델로 바꾸기 (%d MB)</string>
+    <string name="dl_cancel">다운로드 취소</string>
+    <string name="dl_delete">모델 삭제</string>
+    <string name="m_none">아직 음성 모델이 없습니다. 아래에서 받아 주세요. 용량이 커서 와이파이를 권장하며, 한 번만 받으면 됩니다.</string>
+    <string name="m_downloading">다운로드 중… %2$d MB 중 %1$d MB</string>
+    <string name="m_verifying">다운로드 확인 중…</string>
+    <string name="m_failed">다운로드가 끝나지 않았습니다. 연결을 확인하고 다시 시도하세요.</string>
+    <string name="m_bad">받은 파일이 손상되었습니다 (%s). 다시 시도하세요.</string>
+    <string name="m_ready_compact">준비 완료: 경량 모델이 설치되었습니다. 오프라인으로 작동합니다.</string>
+    <string name="m_ready_full">준비 완료: 고정밀 모델이 설치되었습니다. 오프라인으로 작동합니다.</string>
+    <string name="voice">목소리</string>
+    <string name="quality">속도와 품질</string>
+    <string name="q_fast">가장 빠르게</string>
+    <string name="q_balanced">균형 (추천)</string>
+    <string name="q_best">최고 품질</string>
+    <string name="model_note">경량 모델은 음성 인식 테스트에서 고정밀 모델만큼 정확했고 더 빠릅니다. 고정밀 모델은 Supertone의 원본입니다.</string>
+
+    <string name="preset">서비스</string>
+    <string name="base_url">기본 URL</string>
+    <string name="api_key">API 키</string>
+    <string name="model">모델</string>
+    <string name="voice_id">목소리</string>
+    <string name="online_note">온라인 음성을 쓰면 읽을 글이 본인의 키로 해당 서비스에 전송됩니다. 온라인 소스를 고르지 않으면 아무것도 전송되지 않습니다.</string>
+
+    <string name="sec_try">들어 보기</string>
+    <string name="speak">읽기</string>
+    <string name="try_not_ready">먼저 위에서 음성 소스를 설정하세요.</string>
+    <string name="try_error">읽지 못했습니다 (오류 %d). 위의 설정을 확인하세요.</string>
+
+    <string name="sec_about">정보</string>
+    <string name="about">Ko TTS는 무료 오픈소스입니다: https://github.com/robbie-med/ko_tts\n\n휴대폰 음성은 Supertone의 Supertonic 3를 사용하며, 사칭·허위정보 같은 해로운 사용을 금지하는 BigScience OpenRAIL-M 라이선스를 따릅니다: https://huggingface.co/Supertone/supertonic-3</string>
+</resources>

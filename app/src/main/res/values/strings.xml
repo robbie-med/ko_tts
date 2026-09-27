@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Ko TTS</string>
+    <string name="tagline">Natural Korean text-to-speech for any app. Runs on your phone, no Google services needed.</string>
+
+    <string name="sec_status">Engine</string>
+    <string name="is_default">Ko TTS is your default speech engine.</string>
+    <string name="not_default">Ko TTS isn\'t your default engine yet. Apps that ask for Ko TTS by name still use it. To use it everywhere, set \"Preferred engine\" to Ko TTS.</string>
+    <string name="open_tts_settings">Open Android speech settings</string>
+
+    <string name="sec_provider">Voice source</string>
+    <string name="p_supertonic">On this phone: Supertonic 3 (offline, private)</string>
+    <string name="p_openai">OpenAI-compatible API (OpenAI, PPQ.AI, self-hosted)</string>
+    <string name="p_google">Google Cloud Text-to-Speech</string>
+    <string name="p_elevenlabs">ElevenLabs</string>
+
+    <string name="dl_title">Ko TTS voice model</string>
+    <string name="dl_compact">Download compact model (%d MB)</string>
+    <string name="dl_full">Download full-precision model (%d MB)</string>
+    <string name="dl_replace_compact">Switch to compact model (%d MB)</string>
+    <string name="dl_replace_full">Switch to full-precision model (%d MB)</string>
+    <string name="dl_cancel">Cancel download</string>
+    <string name="dl_delete">Delete model</string>
+    <string name="m_none">No voice model yet. Download one below. Use Wi-Fi: it\'s a big file, and it\'s needed only once.</string>
+    <string name="m_downloading">Downloading… %1$d of %2$d MB</string>
+    <string name="m_verifying">Checking the download…</string>
+    <string name="m_failed">The download didn\'t finish. Check your connection and try again.</string>
+    <string name="m_bad">A downloaded file was corrupted (%s). Try again.</string>
+    <string name="m_ready_compact">Ready: compact model installed. Speech works offline.</string>
+    <string name="m_ready_full">Ready: full-precision model installed. Speech works offline.</string>
+    <string name="voice">Voice</string>
+    <string name="quality">Speed vs. quality</string>
+    <string name="q_fast">Fastest</string>
+    <string name="q_balanced">Balanced (recommended)</string>
+    <string name="q_best">Best quality</string>
+    <string name="model_note">Compact was as accurate as full precision in our speech-recognition tests, and it\'s faster. Full precision is Supertone\'s original release.</string>
+
+    <string name="preset">Service</string>
+    <string name="base_url">Base URL</string>
+    <string name="api_key">API key</string>
+    <string name="model">Model</string>
+    <string name="voice_id">Voice</string>
+    <string name="online_note">Online voices send the text you hear to that service, using your own key. Nothing is sent unless you pick an online source.</string>
+
+    <string name="sec_try">Try it</string>
+    <string name="try_default">안녕하세요. 오늘 오후 3시 30분에 병원에 가요. 열이 38.2도예요.</string>
+    <string name="speak">Speak</string>
+    <string name="try_not_ready">Set up the voice source above first.</string>
+    <string name="try_error">Couldn\'t speak (error %d). Check the settings above.</string>
+
+    <string name="sec_about">About</string>
+    <string name="about">Ko TTS is free and open source: https://github.com/robbie-med/ko_tts\n\nOn-device voices use Supertonic 3 by Supertone Inc., released under the BigScience OpenRAIL-M license, which forbids harmful uses such as impersonation and disinformation: https://huggingface.co/Supertone/supertonic-3</string>
+</resources>
