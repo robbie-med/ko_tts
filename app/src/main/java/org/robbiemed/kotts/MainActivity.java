@@ -179,7 +179,8 @@ public class MainActivity extends Activity {
             status.setText(ModelManager.COMPACT.equals(installed) ? R.string.m_ready_compact : R.string.m_ready_full);
         } else {
             String bad = Prefs.str(this, "dl_error", "");
-            status.setText(bad.isEmpty() ? getString(R.string.m_none) : getString(R.string.m_bad, bad));
+            status.setText(ModelManager.missing(this) ? getString(R.string.m_missing)
+                    : bad.isEmpty() ? getString(R.string.m_none) : getString(R.string.m_bad, bad));
         }
     }
 

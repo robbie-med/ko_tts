@@ -26,6 +26,7 @@
     <string name="m_verifying">Checking the download…</string>
     <string name="m_failed">The download didn\'t finish. Check your connection and try again.</string>
     <string name="m_bad">A downloaded file was corrupted (%s). Try again.</string>
+    <string name="m_missing">The voice model\'s files are gone from this phone. Download it again.</string>
     <string name="m_ready_compact">Ready: compact model installed. Speech works offline.</string>
     <string name="m_ready_full">Ready: full-precision model installed. Speech works offline.</string>
     <string name="voice">Voice</string>

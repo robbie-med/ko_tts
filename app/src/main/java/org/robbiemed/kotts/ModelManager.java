@@ -4,6 +4,7 @@ import android.app.DownloadManager;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,6 +20,11 @@ import java.util.List;
  *
  * "full" is Supertone's original fp32 release. "compact" swaps in int8 builds of the
  * text encoder and vector estimator (the vocoder stays fp32: quantizing it wrecks the audio).
+ *
+ * DownloadManager writes into download/. Once every file checks out, the folder is renamed to
+ * model/ and the download records are dropped. DownloadManager deletes the file a record points
+ * at whenever that record goes away (cleanup, "clear downloads", remove()), so a model left
+ * where it was downloaded can vanish while the app still calls it installed.
  */
 public final class ModelManager {
     private ModelManager() { }
@@ -72,19 +78,65 @@ public final class ModelManager {
         return l;
     }
 
-    public static File dir(Context c) {
+    private static File base(Context c) {
         File ext = c.getExternalFilesDir(null);
-        return new File(ext != null ? ext : c.getFilesDir(), "supertonic-3");
+        return ext != null ? ext : c.getFilesDir();
     }
+
+    /** The installed model. Nothing here is known to DownloadManager. */
+    public static File dir(Context c) { return new File(base(c), "model"); }
+
+    /** Where DownloadManager writes; emptied as soon as the files are verified. */
+    private static File staging(Context c) { return new File(base(c), "download"); }
 
     private static File marker(Context c) { return new File(dir(c), "installed"); }
 
-    /** Installed variant, or null. */
+    /** Installed variant, or null. The marker only counts if every model file is still there. */
     public static String installed(Context c) {
-        File m = marker(c);
-        if (!m.exists()) return null;
-        return Prefs.str(c, Prefs.ST_VARIANT, FULL);
+        migrate(c);
+        if (!marker(c).exists()) return null;
+        String variant = Prefs.str(c, Prefs.ST_VARIANT, FULL);
+        return complete(dir(c), variant) ? variant : null;
     }
+
+    /** True when a model was installed but some of its files have since disappeared. */
+    public static boolean missing(Context c) { return marker(c).exists() && installed(c) == null; }
+
+    private static boolean complete(File d, String variant) {
+        for (F f : files(variant)) {
+            if (new File(d, f.path).length() == 0) return false; // also 0 when the file doesn't exist
+        }
+        return true;
+    }
+
+    /**
+     * Up to 0.1.0 the model stayed in supertonic-3/, where DownloadManager had put it and could
+     * delete it. Move it to dir() and drop all of this app's download records. Runs once.
+     */
+    private static void migrate(Context c) {
+        if (Prefs.get(c).getBoolean("migrated_dl", false)) return;
+        synchronized (ModelManager.class) {
+            if (Prefs.get(c).getBoolean("migrated_dl", false)) return;
+            File old = new File(base(c), "supertonic-3");
+            if (new File(old, "installed").exists() && !dir(c).exists() && !old.renameTo(dir(c))) {
+                Log.w("KoTTS", "couldn't move " + old + "; will retry");
+                return;
+            }
+            DownloadManager dm = dm(c);
+            List<Long> all = new ArrayList<>();
+            try (Cursor cur = dm.query(new DownloadManager.Query())) {
+                while (cur != null && cur.moveToNext()) all.add(cur.getLong(cur.getColumnIndexOrThrow(DownloadManager.COLUMN_ID)));
+            }
+            long[] ids = new long[all.size()];
+            for (int k = 0; k < ids.length; k++) ids[k] = all.get(k);
+            if (ids.length > 0) dm.remove(ids);
+            deleteTree(old); // only an unfinished old download is left in it
+            Prefs.get(c).edit().remove("dl_ids").putBoolean("migrated_dl", true).apply();
+            Log.i("KoTTS", "migrated model to " + dir(c) + ", dropped " + ids.length + " download records");
+        }
+    }
+
+    private static DownloadManager dm(Context c) { return (DownloadManager) c.getSystemService(Context.DOWNLOAD_SERVICE); }
 
     // ---- downloading ----
 
@@ -98,9 +150,9 @@ public final class ModelManager {
 
     public static void start(Context c, String variant) {
         cancel(c);
-        File d = dir(c);
-        deleteTree(d);
-        DownloadManager dm = (DownloadManager) c.getSystemService(Context.DOWNLOAD_SERVICE);
+        deleteTree(dir(c));
+        File d = staging(c);
+        DownloadManager dm = dm(c);
         StringBuilder ids = new StringBuilder();
         String title = c.getString(R.string.dl_title);
         for (F f : files(variant)) {
@@ -122,8 +174,9 @@ public final class ModelManager {
 
     public static void cancel(Context c) {
         long[] ids = ids(c);
-        if (ids.length > 0) ((DownloadManager) c.getSystemService(Context.DOWNLOAD_SERVICE)).remove(ids);
+        if (ids.length > 0) dm(c).remove(ids);
         Prefs.get(c).edit().remove("dl_ids").apply();
+        deleteTree(staging(c));
     }
 
     public static void delete(Context c) {
@@ -142,9 +195,10 @@ public final class ModelManager {
 
     /** Null when no download is pending. */
     public static Progress progress(Context c) {
+        migrate(c);
         long[] ids = ids(c);
         if (ids.length == 0) return null;
-        DownloadManager dm = (DownloadManager) c.getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager dm = dm(c);
         long done = 0, total = 0;
         int ok = 0;
         boolean failed = false;
@@ -164,25 +218,40 @@ public final class ModelManager {
         return new Progress(done, total, ok < ids.length && !failed, failed);
     }
 
-    /** Called when every download finished: checks hashes and marks the model installed. */
+    /**
+     * Called when every download finished: checks hashes, moves the files out of DownloadManager's
+     * reach, checks they arrived, and only then marks the model installed.
+     */
     public static synchronized boolean finish(Context c) {
         Progress p = progress(c);
         if (p == null || p.running || p.failed) return false;
         String variant = Prefs.str(c, "dl_variant", FULL);
-        File d = dir(c);
+        File s = staging(c), d = dir(c);
         for (F f : files(variant)) {
-            if (!f.sha.equals(sha256(new File(d, f.path)))) {
-                Prefs.get(c).edit().remove("dl_ids").putString("dl_error", f.path).apply();
-                return false;
-            }
+            if (!f.sha.equals(sha256(new File(s, f.path)))) return fail(c, f.path);
         }
+        // Move first, then drop the records: removing a record deletes the file it points at.
+        deleteTree(d);
+        if (!s.renameTo(d)) return fail(c, d.getName());
+        long[] ids = ids(c);
+        if (ids.length > 0) dm(c).remove(ids);
+        if (!complete(d, variant)) return fail(c, d.getName());
         try (FileOutputStream o = new FileOutputStream(marker(c))) {
             o.write(variant.getBytes());
         } catch (Exception e) {
-            return false;
+            return fail(c, "installed");
         }
         Prefs.get(c).edit().remove("dl_ids").remove("dl_error").putString(Prefs.ST_VARIANT, variant).apply();
+        Log.i("KoTTS", "installed " + variant + " model in " + d + ", dropped " + ids.length + " download records");
         return true;
+    }
+
+    private static boolean fail(Context c, String what) {
+        long[] ids = ids(c);
+        if (ids.length > 0) dm(c).remove(ids);
+        Prefs.get(c).edit().remove("dl_ids").putString("dl_error", what).apply();
+        deleteTree(staging(c));
+        return false;
     }
 
     static String sha256(File f) {

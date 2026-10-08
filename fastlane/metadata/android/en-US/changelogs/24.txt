@@ -1,0 +1,1 @@
+Fixes the voice model disappearing after a while: once downloaded and verified, the model is moved out of Android's download manager, which could delete it while Ko TTS still said it was installed. Ko TTS now checks the model files are really there, and tells you if they've gone missing. An existing model is moved over automatically on the first start; nothing to re-download.

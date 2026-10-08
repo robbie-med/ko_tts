@@ -26,6 +26,7 @@
     <string name="m_verifying">다운로드 확인 중…</string>
     <string name="m_failed">다운로드가 끝나지 않았습니다. 연결을 확인하고 다시 시도하세요.</string>
     <string name="m_bad">받은 파일이 손상되었습니다 (%s). 다시 시도하세요.</string>
+    <string name="m_missing">음성 모델 파일이 휴대폰에서 사라졌습니다. 다시 다운로드해 주세요.</string>
     <string name="m_ready_compact">준비 완료: 경량 모델이 설치되었습니다. 오프라인으로 작동합니다.</string>
     <string name="m_ready_full">준비 완료: 고정밀 모델이 설치되었습니다. 오프라인으로 작동합니다.</string>
     <string name="voice">목소리</string>
